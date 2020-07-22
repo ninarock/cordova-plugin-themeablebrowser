@@ -748,6 +748,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                     }
                     if (features.title.size != 0) {
                         title.setTextSize(features.title.size);
+						title.setTypeface(null, Typeface.BOLD);
                     }					
                 }
 
@@ -1035,6 +1036,8 @@ public class ThemeableBrowser extends CordovaPlugin {
     }
 
     private void setButtonImages(View view, BrowserButton buttonProps, int disabledAlpha) {
+		view.setImageResource(cordova.getActivity().getResources().getIdentifier(buttonProps.image, "drawable", cordova.getActivity().getPackageName()));
+		/*
         Drawable normalDrawable = null;
         Drawable disabledDrawable = null;
         Drawable pressedDrawable = null;
@@ -1125,7 +1128,7 @@ public class ThemeableBrowser extends CordovaPlugin {
             );
         }
 
-        setBackground(view, states);
+        setBackground(view, states);*/
     }
 
     private void setBackground(View view, Drawable drawable) {
