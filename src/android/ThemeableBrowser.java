@@ -746,6 +746,9 @@ public class ThemeableBrowser extends CordovaPlugin {
                     if (features.title.staticText != null) {
                         title.setText(features.title.staticText);
                     }
+                    if (features.title.size != 0) {
+                        title.setTextSize(features.title.size);
+                    }					
                 }
 
                 // WebView
@@ -1443,5 +1446,6 @@ public class ThemeableBrowser extends CordovaPlugin {
         public String color;
         public String staticText;
         public boolean showPageTitle;
+		public float size = 0;
     }
 }

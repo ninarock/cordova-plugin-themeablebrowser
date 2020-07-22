@@ -42,7 +42,8 @@ This plugin launches an in-app web view on top the existing [CordovaWebView](htt
         },
         title: {
             color: '#003264ff',
-            showPageTitle: true
+            showPageTitle: true,
+			size: 17
         },
         backButton: {
             image: 'back',

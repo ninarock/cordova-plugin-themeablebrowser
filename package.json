@@ -1,9 +1,9 @@
 {
-  "name": "cordova-plugin-themeablebrowser",
-  "version": "0.2.18",
-  "description": "Cordova ThemeableBrowser Plugin",
+  "name": "cordova-plugin-themeablebrowser-nex",
+  "version": "0.3.01",
+  "description": "Cordova ThemeableBrowser Plugin Nina Ex",
   "cordova": {
-    "id": "cordova-plugin-themeablebrowser",
+    "id": "cordova-plugin-themeablebrowser-nex",
     "platforms": [
       "android",
       "amazon-fireos",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/initialxy/cordova-plugin-themeablebrowser"
+    "url": "https://github.com/ninarock/cordova-plugin-themeablebrowser"
   },
   "keywords": [
     "cordova",
