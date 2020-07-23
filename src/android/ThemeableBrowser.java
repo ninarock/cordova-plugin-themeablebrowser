@@ -25,7 +25,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -55,7 +57,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -750,6 +751,8 @@ public class ThemeableBrowser extends CordovaPlugin {
                     }
                     if (features.title.size != 0) {
                         title.setTextSize(features.title.size);
+                        Typeface tf = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+                        title.setTypeface(tf);
 						//title.setTypeface(null, Typeface.BOLD);
                     }					
                 }
@@ -1041,14 +1044,16 @@ public class ThemeableBrowser extends CordovaPlugin {
     private void setButtonImages(ImageButton view, BrowserButton buttonProps, int disabledAlpha) {
         Resources resources = cordova.getActivity().getResources();
         final int resourceId = resources.getIdentifier(buttonProps.image, "drawable", cordova.getActivity().getPackageName());
-        view.setImageResource(resourceId);
+        Drawable drawable = resources.getDrawable(resourceId);
+        PressedEffectStateListDrawable states = new PressedEffectStateListDrawable(drawable, 0xFF75a8ff);
+
+        view.setImageDrawable(states); // setImageResource(resourceId);
         view.setBackgroundResource(0);
 
-        Drawable d = resources.getDrawable(resourceId);
 
         ViewGroup.LayoutParams params = view.getLayoutParams();
-        params.width = Math.max(dpToPixels(36), d.getIntrinsicWidth() + dpToPixels(10));
-        params.height = d.getIntrinsicHeight() + dpToPixels(10);
+        params.width = Math.max(dpToPixels(36), drawable.getIntrinsicWidth() + dpToPixels(10));
+        params.height = drawable.getIntrinsicHeight() + dpToPixels(10);
     }
 
     private void setMenuImages(View view, BrowserButton buttonProps, int disabledAlpha) {
@@ -1464,5 +1469,38 @@ public class ThemeableBrowser extends CordovaPlugin {
         public String staticText;
         public boolean showPageTitle;
 		public float size = 0;
+    }
+
+    private class PressedEffectStateListDrawable extends StateListDrawable {
+
+        private int selectionColor;
+
+        public PressedEffectStateListDrawable(Drawable drawable, int selectionColor) {
+            super();
+            this.selectionColor = selectionColor;
+            addState(new int[] { android.R.attr.state_pressed }, drawable);
+            addState(new int[] {}, drawable);
+        }
+
+        @Override
+        protected boolean onStateChange(int[] states) {
+            boolean isStatePressedInArray = false;
+            for (int state : states) {
+                if (state == android.R.attr.state_pressed) {
+                    isStatePressedInArray = true;
+                }
+            }
+            if (isStatePressedInArray) {
+                super.setColorFilter(selectionColor, PorterDuff.Mode.MULTIPLY);
+            } else {
+                super.clearColorFilter();
+            }
+            return super.onStateChange(states);
+        }
+
+        @Override
+        public boolean isStateful() {
+            return true;
+        }
     }
 }
