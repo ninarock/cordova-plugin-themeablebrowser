@@ -25,7 +25,6 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -64,6 +63,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -833,6 +833,10 @@ public class ThemeableBrowser extends CordovaPlugin {
                                 @Override
                                 public void onClick(View view) {
                                     if (inAppWebView != null) {
+
+                                        if (buttonProps.toastClickMessage != null) {
+                                            Toast.makeText(cordova.getActivity().getApplicationContext(), buttonProps.toastClickMessage, Toast.LENGTH_LONG).show();
+                                        }
                                         emitButtonEvent(buttonProps,
                                                 inAppWebView.getUrl(), index);
                                     }
@@ -1450,6 +1454,7 @@ public class ThemeableBrowser extends CordovaPlugin {
         public String wwwImagePressed;
         public double wwwImageDensity = 1;
         public String align = ALIGN_LEFT;
+        public String toastClickMessage;
     }
 
     private static class BrowserMenu extends BrowserButton {
