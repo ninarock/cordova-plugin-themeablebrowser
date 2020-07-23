@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
@@ -57,6 +58,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -617,7 +619,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 });
 
                 // Back button
-                final Button back = createButton(
+                final ImageButton back = createButton(
                     features.backButton,
                     "back button",
                     new View.OnClickListener() {
@@ -640,7 +642,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 }
 
                 // Forward button
-                final Button forward = createButton(
+                final ImageButton forward = createButton(
                     features.forwardButton,
                     "forward button",
                     new View.OnClickListener() {
@@ -660,7 +662,7 @@ public class ThemeableBrowser extends CordovaPlugin {
 
 
                 // Close/Done button
-                Button close = createButton(
+                ImageButton close = createButton(
                     features.closeButton,
                     "close button",
                     new View.OnClickListener() {
@@ -680,7 +682,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                     menu.setLayoutParams(new LinearLayout.LayoutParams(
                             LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                     menu.setContentDescription("menu button");
-                    setButtonImages(menu, features.menu, DISABLED_ALPHA);
+                    setMenuImages(menu, features.menu, DISABLED_ALPHA);
 
                     // We are not allowed to use onClickListener for Spinner, so we will use
                     // onTouchListener as a fallback.
@@ -748,7 +750,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                     }
                     if (features.title.size != 0) {
                         title.setTextSize(features.title.size);
-						title.setTypeface(null, Typeface.BOLD);
+						//title.setTypeface(null, Typeface.BOLD);
                     }					
                 }
 
@@ -821,7 +823,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                     for (int i = 0; i < features.customButtons.length; i++) {
                         final BrowserButton buttonProps = features.customButtons[i];
                         final int index = i;
-                        Button button = createButton(
+                        ImageButton button = createButton(
                             buttonProps,
                             String.format("custom button at %d", i),
                             new View.OnClickListener() {
@@ -911,12 +913,13 @@ public class ThemeableBrowser extends CordovaPlugin {
                 toolbar.addView(rightButtonContainer);
 
                 if (title != null) {
-                    int titleMargin = Math.max(
-                            leftContainerWidth, rightContainerWidth);
-
+                    //int titleMargin = Math.max(
+                    //        leftContainerWidth, rightContainerWidth);
+                    int ttMargin = Math.max(dpToPixels(toolbarDef != null
+                            ? toolbarDef.height : TOOLBAR_DEF_HEIGHT), leftContainerWidth);
                     FrameLayout.LayoutParams titleParams
                             = (FrameLayout.LayoutParams) title.getLayoutParams();
-                    titleParams.setMargins(titleMargin, 0, titleMargin, 0);
+                    titleParams.setMargins(ttMargin, 0, rightContainerWidth, 0);
                     toolbar.addView(title);
                 }
 
@@ -1035,9 +1038,20 @@ public class ThemeableBrowser extends CordovaPlugin {
         return result;
     }
 
-    private void setButtonImages(View view, BrowserButton buttonProps, int disabledAlpha) {
-		view.setImageResource(cordova.getActivity().getResources().getIdentifier(buttonProps.image, "drawable", cordova.getActivity().getPackageName()));
-		/*
+    private void setButtonImages(ImageButton view, BrowserButton buttonProps, int disabledAlpha) {
+        Resources resources = cordova.getActivity().getResources();
+        final int resourceId = resources.getIdentifier(buttonProps.image, "drawable", cordova.getActivity().getPackageName());
+        view.setImageResource(resourceId);
+        view.setBackgroundResource(0);
+
+        Drawable d = resources.getDrawable(resourceId);
+
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width = Math.max(dpToPixels(36), d.getIntrinsicWidth() + dpToPixels(10));
+        params.height = d.getIntrinsicHeight() + dpToPixels(10);
+    }
+
+    private void setMenuImages(View view, BrowserButton buttonProps, int disabledAlpha) {
         Drawable normalDrawable = null;
         Drawable disabledDrawable = null;
         Drawable pressedDrawable = null;
@@ -1128,7 +1142,7 @@ public class ThemeableBrowser extends CordovaPlugin {
             );
         }
 
-        setBackground(view, states);*/
+        setBackground(view, states);
     }
 
     private void setBackground(View view, Drawable drawable) {
@@ -1139,11 +1153,11 @@ public class ThemeableBrowser extends CordovaPlugin {
         }
     }
 
-    private Button createButton(BrowserButton buttonProps, String description,
+    private ImageButton createButton(BrowserButton buttonProps, String description,
             View.OnClickListener listener) {
-        Button result = null;
+        ImageButton result = null;
         if (buttonProps != null) {
-            result = new Button(cordova.getActivity());
+            result = new ImageButton(cordova.getActivity());
             result.setContentDescription(description);
             result.setLayoutParams(new LinearLayout.LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
