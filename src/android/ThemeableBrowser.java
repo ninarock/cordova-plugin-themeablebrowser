@@ -852,7 +852,20 @@ public class ThemeableBrowser extends CordovaPlugin {
                                     if (inAppWebView != null) {
 
                                         if (buttonProps.toastClickMessage != null) {
-                                            Toast.makeText(cordova.getActivity().getApplicationContext(), buttonProps.toastClickMessage, Toast.LENGTH_LONG).show();
+                                            Toast toast = Toast.makeText(cordova.getActivity().getApplicationContext(), buttonProps.toastClickMessage, Toast.LENGTH_LONG);
+                                            toast.setGravity(Gravity.TOP, 0, (int) Math.round( 1.5 * dpToPixels(toolbarDef != null
+                                                                                            ? toolbarDef.height : TOOLBAR_DEF_HEIGHT)));
+
+                                            View v = toast.getView();
+
+                                            //Gets the actual oval background of the Toast then sets the colour filter
+                                            v.getBackground().setColorFilter(0xff92949c, PorterDuff.Mode.SRC_IN);
+
+                                            //Gets the TextView from the Toast so it can be editted
+                                            TextView text = v.findViewById(android.R.id.message);
+                                            text.setTextColor(0xffffffff);
+
+                                            toast.show();
                                         }
                                         emitButtonEvent(buttonProps,
                                                 inAppWebView.getUrl(), index);
