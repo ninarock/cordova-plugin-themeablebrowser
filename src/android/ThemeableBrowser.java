@@ -111,6 +111,7 @@ public class ThemeableBrowser extends CordovaPlugin {
     private WebView inAppWebView;
     private EditText edittext;
     private CallbackContext callbackContext;
+    private String rootURL;
 
     /**
      * Executes the request and returns PluginResult.
@@ -436,6 +437,7 @@ public class ThemeableBrowser extends CordovaPlugin {
                 JSONObject obj = new JSONObject();
                 obj.put("type", event.event);
                 obj.put("url", url);
+                obj.put("title", inAppWebView.getTitle());
                 if (index != null) {
                     obj.put("index", index.intValue());
                 }
@@ -770,11 +772,26 @@ public class ThemeableBrowser extends CordovaPlugin {
                 WebViewClient client = new ThemeableBrowserClient(thatWebView, new PageLoadListener() {
                     @Override
                     public void onPageFinished(String url, boolean canGoBack, boolean canGoForward) {
+                        // only show the static text for root url, so that after clicking page links correct title is shown
+                        if (rootURL == null) {
+                            rootURL = inAppWebView.getUrl();
+                        }
+
                         if (inAppWebView != null
                                 && title != null && features.title != null
-                                && features.title.staticText == null
                                 && features.title.showPageTitle) {
-                            title.setText(inAppWebView.getTitle());
+
+                            if (!inAppWebView.getUrl().equals(rootURL)) {
+                                title.setText(inAppWebView.getTitle());
+                            }
+                            else {
+                                if (features.title.staticText == null) {
+                                    title.setText(inAppWebView.getTitle());
+                                }
+                                else {
+                                    title.setText(features.title.staticText);
+                                }
+                            }
                         }
 
                         if (back != null) {
